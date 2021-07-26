@@ -67,33 +67,66 @@ class Pokemon:
             answer = input('What move will you choose? ')
             if answer.lower() in self.attack_dict:
                 initial_damage = self.attack_dict[answer.lower()]
-                damage = random.randint(0, initial_damage)
+                strength_boolean = self.is_strong(pokemon2)
+                if strength_boolean:
+                    damage = random.randint(initial_damage/2, initial_damage)
+                    delay_print(f'#####The attack by {self.name} a {self.type} type was SUPER EFFECTIVE!#####')
+                    pokemon2.health -= damage
+                else:
+                    damage = random.randint(0, initial_damage/2)
+                    delay_print(f'#####Not very effective attack by {self.name}...#####')
+                    pokemon2.health -= damage
+
+                """
                 if damage <= initial_damage / 2:
                     delay_print(f'#####Not very effective attack by {self.name}...#####')
                 else:
                     delay_print(f'#####The attack by {self.name} was SUPER EFFECTIVE!#####')
                 pokemon2.health -= damage
+                """
                 #----Calculate How Much Damage Oppenent will do----#
                 damage_from_opponent = self.opponent_damage(pokemon2)
                 self.health -= damage_from_opponent
                 time.sleep(1)
                 self.fight_stats(pokemon2)
 
+    def is_strong(self, pokemon2):
+        type_1 = self.type
+        type_2 = pokemon2.type
+
+        if type_1 == 'water':
+            if type_2 == 'fire':
+                return True
+            if type_2 == 'grass':
+                return False
+        if type_1 == 'fire':
+            if type_2 == 'grass':
+                return True
+            if type_2 == 'water':
+                return False
+        if type_1 == 'grass':
+            if type_2 == 'water':
+                return True
+            if type_2 == 'fire':
+                return False
+
 
     def opponent_damage(self, pokemon2):
         dict_items = list(pokemon2.attack_dict.items())
         random_pair = random.choice(dict_items)
         initial_damage = int(pokemon2.attack_dict[random_pair[0]])
-        damage = random.randint(0, initial_damage)
 
-        if damage <= initial_damage / 2:
+        strength_boolean = self.is_strong(pokemon2)
+        if strength_boolean:
+            damage = random.randint(0, initial_damage/2)
             print('\n')
             delay_print(f'#####Not very effective attack by {pokemon2.name}...#####')
+            return damage
         else:
+            damage = random.randint(initial_damage/2, initial_damage)
             print('\n')
-            delay_print(f'#####The attack by {pokemon2.name} was SUPER EFFECTIVE!#####')
-
-        return damage
+            delay_print(f'#####The attack by {pokemon2.name}, a {pokemon2.type} type was SUPER EFFECTIVE!#####')
+            return damage
 
 
     def fight_stats(self, pokemon2):
