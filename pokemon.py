@@ -126,15 +126,4 @@ if __name__ == '__main__':
 
     charmander.what_will_they_do(squirtle)
 
-
-
-    '''Play once and make a move... What I want you to change is after your first round of choosing, don't reprint the 
-    YOU HAVE CHOSEN TO FIGHT {some character}... Only show the opponents stats and what move will you make.'''
-
-    '''EXTRA STEPS:
-
-    2) Find the bug where when it shows the stats at the beginning, the two HP's seem to almost always be different lengths!
-    3) THESE ARE THE SIMPLE CONSTRAINTS THAT WE CAN WORK ON, LITTLE BY LITTLE AFTER THESE ARE DONE YOU CAN IMPLEMENT THINGS LIKE AN INVENTORY AND MORE CHARACTERS  
-
-    4) most important step is to determine damage based off of types... What their weaknesses are and such...  
-    '''
+#HELLOOOO
