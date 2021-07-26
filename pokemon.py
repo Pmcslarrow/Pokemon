@@ -125,5 +125,3 @@ if __name__ == '__main__':
     bulbasaur = Pokemon('bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49)
 
     charmander.what_will_they_do(squirtle)
-
-#HELLOOOO
