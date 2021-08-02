@@ -12,15 +12,17 @@ def delay_print(s):
     
 
 class Pokemon:
-    def __init__(self, name, lvl, type, attack, defense, health=None):
+    def __init__(self, name, lvl, type, attack, defense, power_stars, health=None):
         self.name = name
         self.lvl = lvl
         self.type = type
         self.attack_dict = attack
         self.defense = defense
         self.health = health
+        self.power = power_stars
         self.determine_health()
         
+
     def determine_health(self):
         if self.lvl <= 20:
             HP = (self.lvl * 3 // 100) + self.lvl + random.randint(15, 20)
@@ -36,16 +38,39 @@ class Pokemon:
             self.health = HP
 
     def what_will_they_do(self, pokemon2):
-        delay_print(f'What will {self.name} do with {pokemon2.name}? \n1) FIGHT\n2) RUN\n')
+        delay_print(f'What will {self.name} do against {pokemon2.name}? \n1) FIGHT\n2) RUN\n3) CATCH\n')
         answer = input('Choice (FIGHT, RUN): ')
 
         if answer.lower() == 'fight':
             self.fight_stats(pokemon2)
         elif answer.lower() == 'run':
             self.run_away(pokemon2)
+        elif answer.lower() == 'catch':
+            self.capture_pokemon(pokemon2)
+        else:
+            self.what_will_they_do(pokemon2)
 
 
-    def start_fight(self, pokemon2):
+    def start_fight(self, pokemon2):                    
+        gameover = self.gameover(pokemon2)
+        if not(gameover):
+            delay_print(f'What move will {self.name} make?')
+            print('\n')
+            for move in self.attack_dict:
+                print('Attack: ' + move)
+                print('')
+
+            answer = input('What move will you choose? ')
+            user_attack_damage = self.player_damage(answer, pokemon2)
+            pokemon2.health -= user_attack_damage
+            
+           #----Calculate How Much Damage Oppenent will do----#
+            damage_from_opponent = self.opponent_damage(pokemon2)
+            self.health -= damage_from_opponent
+            time.sleep(1)
+            self.fight_stats(pokemon2)
+
+    def gameover(self, pokemon2):
         if self.health <= 0 and pokemon2.health > 0:
             print('\n\n\n')
             print(f'GAME OVER {pokemon2.name} wins!')
@@ -58,37 +83,8 @@ class Pokemon:
             print('\n\n\n')
             print('Both pokemon have fainted... No winner!')
         else:
-            delay_print(f'What move will {self.name} make?')
-            print('\n')
-            for move in self.attack_dict:
-                print('Attack: ' + move)
-                print('')
+            return False
 
-            answer = input('What move will you choose? ')
-            if answer.lower() in self.attack_dict:
-                initial_damage = self.attack_dict[answer.lower()]
-                strength_boolean = self.is_strong(pokemon2)
-                if strength_boolean:
-                    damage = random.randint(initial_damage/2, initial_damage)
-                    delay_print(f'#####The attack by {self.name} a {self.type} type was SUPER EFFECTIVE!#####')
-                    pokemon2.health -= damage
-                else:
-                    damage = random.randint(0, initial_damage/2)
-                    delay_print(f'#####Not very effective attack by {self.name}...#####')
-                    pokemon2.health -= damage
-
-                """
-                if damage <= initial_damage / 2:
-                    delay_print(f'#####Not very effective attack by {self.name}...#####')
-                else:
-                    delay_print(f'#####The attack by {self.name} was SUPER EFFECTIVE!#####')
-                pokemon2.health -= damage
-                """
-                #----Calculate How Much Damage Oppenent will do----#
-                damage_from_opponent = self.opponent_damage(pokemon2)
-                self.health -= damage_from_opponent
-                time.sleep(1)
-                self.fight_stats(pokemon2)
 
     def is_strong(self, pokemon2):
         type_1 = self.type
@@ -110,23 +106,68 @@ class Pokemon:
             if type_2 == 'fire':
                 return False
 
+    def get_power(self, stars):
+        if stars < 3 and stars >= 0:
+            return 1
+        elif stars == 3:
+            return random.randint(1, 4)
+        elif stars == 4:
+            return random.randint(5, 9)
+        elif stars == 5:
+            return random.randint(10, 13)
+        elif stars == 6:
+            return random.randint(14, 17)
+        elif stars == 7:
+            return random.randint(18, 22)
+        elif stars == 8:
+            return random.randint(5, 9)
+
+    
+    def player_damage(self, answer, pokemon2):
+        if answer.lower() in self.attack_dict:                      
+                initial_damage = self.attack_dict[answer.lower()]
+                strength_boolean = self.is_strong(pokemon2)
+                if strength_boolean:
+                    damage = random.randint(initial_damage/2, initial_damage)
+                    delay_print(f'#####The attack by {self.name} a {self.type} type was SUPER EFFECTIVE!#####')
+                    return damage
+                else:
+                    damage = random.randint(0, initial_damage/2)
+                    delay_print(f'#####Not very effective attack by {self.name}...#####')
+                    return damage
+        else:
+            new_answer = input('Enter a correct attack: ')
+            self.player_damage(new_answer, pokemon2)
+
 
     def opponent_damage(self, pokemon2):
         dict_items = list(pokemon2.attack_dict.items())
         random_pair = random.choice(dict_items)
         initial_damage = int(pokemon2.attack_dict[random_pair[0]])
+        power = self.get_power(pokemon2.power)
 
         strength_boolean = self.is_strong(pokemon2)
         if strength_boolean:
-            damage = random.randint(0, initial_damage/2)
+            damage = random.randint(0, initial_damage/2) + power
             print('\n')
             delay_print(f'#####Not very effective attack by {pokemon2.name}...#####')
             return damage
         else:
-            damage = random.randint(initial_damage/2, initial_damage)
+            damage = random.randint(initial_damage/2, initial_damage) + power
             print('\n')
             delay_print(f'#####The attack by {pokemon2.name}, a {pokemon2.type} type was SUPER EFFECTIVE!#####')
             return damage
+
+    def capture_pokemon(self, pokemon2):
+        if pokemon2.health >= 10:
+            self.what_will_they_do(pokemon2)
+        else:
+            num = random.randint(0, 1)
+            if num == 0:
+                print(f'You failed to capture {pokemon2.name}')
+            if num == 1:
+                self.pokedex.add(pokemon2)
+                print(f'Success! You have captured a wild {pokemon2.name}')
 
 
     def fight_stats(self, pokemon2):
@@ -153,8 +194,8 @@ class Pokemon:
 
 
 if __name__ == '__main__':
-    charmander = Pokemon('charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43)
-    squirtle = Pokemon('squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65)
-    bulbasaur = Pokemon('bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49)
+    charmander = Pokemon('charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
+    squirtle = Pokemon('squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
+    bulbasaur = Pokemon('bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
 
     charmander.what_will_they_do(squirtle)
