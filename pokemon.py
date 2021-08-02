@@ -3,6 +3,9 @@
 import time
 import sys
 import random
+import pokedex
+import DCLL
+import pokemon_player
 
 def delay_print(s):
     for c in s:
@@ -38,15 +41,13 @@ class Pokemon:
             self.health = HP
 
     def what_will_they_do(self, pokemon2):
-        delay_print(f'What will {self.name} do against {pokemon2.name}? \n1) FIGHT\n2) RUN\n3) CATCH\n')
+        delay_print(f'What will {self.name} do against {pokemon2.name}? \n1) FIGHT\n2) RUN\n')
         answer = input('Choice (FIGHT, RUN): ')
 
         if answer.lower() == 'fight':
             self.fight_stats(pokemon2)
         elif answer.lower() == 'run':
             self.run_away(pokemon2)
-        elif answer.lower() == 'catch':
-            self.capture_pokemon(pokemon2)
         else:
             self.what_will_they_do(pokemon2)
 
@@ -59,16 +60,20 @@ class Pokemon:
             for move in self.attack_dict:
                 print('Attack: ' + move)
                 print('')
+            print('Or Capture with (Catch) ')
 
             answer = input('What move will you choose? ')
-            user_attack_damage = self.player_damage(answer, pokemon2)
-            pokemon2.health -= user_attack_damage
-            
-           #----Calculate How Much Damage Oppenent will do----#
-            damage_from_opponent = self.opponent_damage(pokemon2)
-            self.health -= damage_from_opponent
-            time.sleep(1)
-            self.fight_stats(pokemon2)
+            if answer.lower() == 'catch':
+                self.capture_pokemon(pokemon2)
+            else:
+                user_attack_damage = self.player_damage(answer, pokemon2)
+                pokemon2.health -= user_attack_damage
+                
+            #----Calculate How Much Damage Oppenent will do----#
+                damage_from_opponent = self.opponent_damage(pokemon2)
+                self.health -= damage_from_opponent
+                time.sleep(1)
+                self.fight_stats(pokemon2)
 
     def gameover(self, pokemon2):
         if self.health <= 0 and pokemon2.health > 0:
@@ -159,15 +164,18 @@ class Pokemon:
             return damage
 
     def capture_pokemon(self, pokemon2):
-        if pokemon2.health >= 10:
-            self.what_will_they_do(pokemon2)
+        if pokemon2.health >= 20:
+            self.start_fight(pokemon2)
         else:
             num = random.randint(0, 1)
             if num == 0:
                 print(f'You failed to capture {pokemon2.name}')
             if num == 1:
-                self.pokedex.add(pokemon2)
-                print(f'Success! You have captured a wild {pokemon2.name}')
+                my_pokedex.add(pokemon2)
+                print(f'Success! You have captured a wild {pokemon2.name}\n')
+                self.option_screen()
+
+
 
 
     def fight_stats(self, pokemon2):
@@ -175,6 +183,7 @@ class Pokemon:
         print(f'Opponents Stats:')
         print(f'{pokemon2.name}        Lv{pokemon2.lvl}')
         print('HP '+ pokemon2.health * '=')
+        print(f'                           HP {pokemon2.health}')
         print('\n')
         print(f'{self.name} stats:')
         print(f'{self.name}        Lv{self.lvl}')
@@ -197,5 +206,7 @@ if __name__ == '__main__':
     charmander = Pokemon('charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
     squirtle = Pokemon('squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
     bulbasaur = Pokemon('bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
+    squirtle.what_will_they_do(charmander)
 
-    charmander.what_will_they_do(squirtle)
+    paul = pokemon_player.player(pokedex.Pokedex(DCLL.DCLL()))
+
