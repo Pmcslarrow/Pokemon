@@ -3,7 +3,6 @@
 import time
 import sys
 import random
-import pokedex
 import DCLL
 import pokemon_player
 
@@ -15,7 +14,7 @@ def delay_print(s):
     
 
 class Pokemon:
-    def __init__(self, name, lvl, type, attack, defense, power_stars, health=None):
+    def __init__(self, USER, name, lvl, type, attack, defense, power_stars, health=None):
         self.name = name
         self.lvl = lvl
         self.type = type
@@ -23,6 +22,7 @@ class Pokemon:
         self.defense = defense
         self.health = health
         self.power = power_stars
+        self.player = USER
         self.determine_health()
         
 
@@ -163,19 +163,19 @@ class Pokemon:
             delay_print(f'#####The attack by {pokemon2.name}, a {pokemon2.type} type was SUPER EFFECTIVE!#####')
             return damage
 
+
     def capture_pokemon(self, pokemon2):
         if pokemon2.health >= 20:
             self.start_fight(pokemon2)
         else:
-            num = random.randint(0, 1)
+            num = random.randint(0, 2)
             if num == 0:
-                print(f'You failed to capture {pokemon2.name}')
-            if num == 1:
-                my_pokedex.add(pokemon2)
-                print(f'Success! You have captured a wild {pokemon2.name}\n')
-                self.option_screen()
-
-
+                delay_print(f'You failed to capture {pokemon2.name}')
+                pokemon_player.player.option_screen()
+            if num >= 1:
+                delay_print(f'Success! You have captured a wild {pokemon2.name}\n')
+                self.player.add_to_pokedex(pokemon2)
+                pokemon_player.player.option_screen()
 
 
     def fight_stats(self, pokemon2):
@@ -202,11 +202,16 @@ class Pokemon:
             delay_print('You successfully ran away!')
 
 
+
+
 if __name__ == '__main__':
-    charmander = Pokemon('charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
-    squirtle = Pokemon('squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
-    bulbasaur = Pokemon('bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
+    paul = pokemon_player.player()
+    maxence = pokemon_player.player()
+
+    charmander = Pokemon(paul, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
+    squirtle = Pokemon(maxence, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
+    bulbasaur = Pokemon(paul, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
     squirtle.what_will_they_do(charmander)
 
-    paul = pokemon_player.player(pokedex.Pokedex(DCLL.DCLL()))
+    poke_list = [charmander, squirtle, bulbasaur]
 

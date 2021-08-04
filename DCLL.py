@@ -1,5 +1,8 @@
 #Paul McSlarrow Doubly Circular Linked List
 
+
+
+#A Node class for storing items with a next and prev pointer forwards and backwards
 class Node:
     def __init__(self, value):
         self.item = value
@@ -10,6 +13,8 @@ class Node:
     def get_item(self):
         return self.item
 
+
+#Class for doubly circular linked list with a head and a tail
 class DCLL:
     def __init__(self):
         self.head = None
@@ -22,6 +27,7 @@ class DCLL:
     def get_current(self):
         return self.head
 
+    #The main append function to add items inside the DCLL... It places items right before head
     def insert_item(self, new_item):
         if self.is_empty():
             self.head = Node(new_item)
@@ -51,7 +57,7 @@ class DCLL:
             head.prev = new_node
             self.size += 1
 
-
+    #Used to remove an item in the data structure with the input of a pointer
     def remove_item_with_current(self, current):
         previous = current.prev
         infront = current.next
@@ -61,6 +67,7 @@ class DCLL:
 
         self.size -= 1
 
+    #Used to remove an item at a certain index inside the data structure
     def remove_item_with_index(self, index):
         current = self.head
         for _ in range(index):
@@ -86,6 +93,7 @@ class DCLL:
 
         return counter
 
+    #Searches for an item at a certain index
     def find_item_at_index(self, index):
         current = self.head
         if index == 0:
@@ -95,18 +103,15 @@ class DCLL:
                 current = current.next
             return current.item
 
-    def counter_index(self, counter):                #Everytime a user clicks, counter goes up. Now if we want the value stored at the spot, given the counter, I will use modulo to return the item
-        return counter % self.size
-
-
+    #Prints out all items inside the DCLL
     def __str__(self):
         if self.size == 1:
-            print(self.head.item)
+            print(self.head.item.name)
         else:
             counter = 0
             current = self.head
             while counter != self.size:
-                print(current.item)
+                print(current.item.name)    #Prints current.item.name for pokemon (remove name if you need it later)
                 current = current.next
                 counter += 1
 
