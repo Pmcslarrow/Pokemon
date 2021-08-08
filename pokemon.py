@@ -40,6 +40,7 @@ class Pokemon:
             HP = (self.lvl * 4 // 100) + self.lvl + random.randint(40, 50)
             self.health = HP
 
+
     def what_will_they_do(self, pokemon2):
         delay_print(f'What will {self.name} do against {pokemon2.name}? \n1) FIGHT\n2) RUN\n')
         answer = input('Choice (FIGHT, RUN): ')
@@ -60,7 +61,7 @@ class Pokemon:
             for move in self.attack_dict:
                 print('Attack: ' + move)
                 print('')
-            print('Or Capture with (Catch) ')
+            print('Or try to capture with (Catch) ')
 
             answer = input('What move will you choose? ')
             if answer.lower() == 'catch':
@@ -75,18 +76,21 @@ class Pokemon:
                 time.sleep(1)
                 self.fight_stats(pokemon2)
 
+
     def gameover(self, pokemon2):
         if self.health <= 0 and pokemon2.health > 0:
             print('\n\n\n')
-            print(f'GAME OVER {pokemon2.name} wins!')
-            exit()
+            print(f'{pokemon2.name} wins!')      
+            self.player.option_screen()
         elif self.health > 0 and pokemon2.health <= 0:
             print('\n\n\n')
-            print(f'GAME OVER {self.name} wins!')
-            exit()
+            print(f'{self.name} wins!')
+            self.player.option_screen()
+
         elif self.health <= 0 and pokemon2.health <= 0:
             print('\n\n\n')
             print('Both pokemon have fainted... No winner!')
+            self.player.option_screen()
         else:
             return False
 
@@ -153,12 +157,12 @@ class Pokemon:
 
         strength_boolean = self.is_strong(pokemon2)
         if strength_boolean:
-            damage = random.randint(0, initial_damage/2) + power
+            damage = random.randint(0, initial_damage//2) + power
             print('\n')
             delay_print(f'#####Not very effective attack by {pokemon2.name}...#####')
             return damage
         else:
-            damage = random.randint(initial_damage/2, initial_damage) + power
+            damage = random.randint(initial_damage//2, initial_damage) + power
             print('\n')
             delay_print(f'#####The attack by {pokemon2.name}, a {pokemon2.type} type was SUPER EFFECTIVE!#####')
             return damage
@@ -170,12 +174,12 @@ class Pokemon:
         else:
             num = random.randint(0, 2)
             if num == 0:
-                delay_print(f'You failed to capture {pokemon2.name}')
-                pokemon_player.player.option_screen()
+                delay_print(f'You failed to capture {pokemon2.name}\n')
+                self.player.option_screen()
             if num >= 1:
                 delay_print(f'Success! You have captured a wild {pokemon2.name}\n')
                 self.player.add_to_pokedex(pokemon2)
-                pokemon_player.player.option_screen()
+                self.player.option_screen()
 
 
     def fight_stats(self, pokemon2):
@@ -197,21 +201,43 @@ class Pokemon:
         num = random.randint(0, 10)
         if num % 2 == 0:
             delay_print(f'{self.name} failed to run away\n')
-            self.fight(pokemon2)
+            self.start_fight(pokemon2)
         else:
             delay_print('You successfully ran away!')
 
 
 
-
 if __name__ == '__main__':
-    paul = pokemon_player.player()
-    maxence = pokemon_player.player()
 
-    charmander = Pokemon(paul, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
-    squirtle = Pokemon(maxence, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
-    bulbasaur = Pokemon(paul, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
-    squirtle.what_will_they_do(charmander)
-
+    player = input('What is your name?: ')
+    player = pokemon_player.player()
+    
+    charmander = Pokemon(player, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
+    squirtle = Pokemon(player, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
+    bulbasaur = Pokemon(player, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
     poke_list = [charmander, squirtle, bulbasaur]
 
+    delay_print(f'Which Pokemon will be your first?: \n')
+    print('\n')
+    for name in poke_list:
+        print(name.name)
+        print('\n')
+    print('\n')
+    ans = input('Answer:  ')
+
+    if ans.lower() == 'charmander':
+        player.add_to_pokedex(charmander)
+        charmander.what_will_they_do(bulbasaur)
+
+    if ans.lower() == 'squirtle':
+        player.add_to_pokedex(squirtle)
+        squirtle.what_will_they_do(charmander)
+
+    if ans.lower() == 'bulbasaur':
+        player.add_to_pokedex(bulbasaur)
+        bulbasaur.what_will_they_do(squirtle)
+    
+
+
+
+    
