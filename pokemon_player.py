@@ -3,34 +3,39 @@ import DCLL
 import random
 import choose_random_pokemon
 import pokemon
+import time
 
 class player:
-    def __init__(self, pokedex=DCLL.DCLL()):
+    def __init__(self, poke_lst, pokedex=DCLL.DCLL()):
         self.pokedex = pokedex
         self.pokemon = []
 
-        charmander = pokemon.Pokemon(None, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 43, 1)
-        squirtle = pokemon.Pokemon(None, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 65, 1)
-        bulbasaur = pokemon.Pokemon(None, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 49, 1)
-        self.poke_list = [charmander, squirtle, bulbasaur]
+        #charmander = pokemon.Pokemon(None, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 93, 1)
+        #squirtle = pokemon.Pokemon(None, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 121, 1)
+        #bulbasaur = pokemon.Pokemon(None, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 111, 1)
+        #pidgey = pokemon.Pokemon(None, 'pidgey', 15, 'flying', {'quick attack' : 12, 'aerial ace' : 28},  73, 1)
+        #geodude = pokemon.Pokemon(None, 'geodude', 15, 'rock', {'rock throw' : 16, 'rock slide' : 36}, 132, 1)
+        self.poke_list = poke_lst
+         #= [charmander, squirtle, bulbasaur, pidgey, geodude]
 
 
     def add_to_pokedex(self, pokemon):
         self.pokedex.insert_item(pokemon)
         self.pokemon.append(pokemon)
+        pokemon.set_player(self)
 
     def show_pokemon(self):
         num = 0
         for pokemon in self.pokemon:
             num += 1
-            print(f'Pokemon {num}', pokemon.name)
+            print(f'Pokemon ({num}): ', pokemon.name)
 
-    #Fight checks to see if you have a pokemon in your pokemon list and if you do it will fight with a random pokemon
-    #In your inventory against a random pokemon outside of your list (This could be the same pokemon that you have)
+
+    #Fights random pokemon from poke_list with one of your pokemon
     def fight(self):
         if len(self.pokemon) == 0:
             print('You have no pokemon')
-            #Since you have no pokemon send him to a new function called 'Search' to search for pokemons!
+            self.option_screen()
         else:
             user_pokemon = random.choice(self.pokemon)
             user_pokemon.determine_health()                         #Later on if you want the health to be damaged from the last battle it did just delete this line
@@ -64,6 +69,7 @@ class player:
                     print('#-----------------------------------#')
                     print('#Pokemon: ', current.item.name)
                     print('#Pokemon Type: ', current.item.type)
+                    print('Pokemon Level: ', current.item.lvl)
                     print('#-----------------------------------#')
                     print('\n')
                     ans = input('Forward or Backward or exit: ')
@@ -80,6 +86,8 @@ class player:
         
         if user_input.lower() == 'pokemon':
             self.show_pokemon()
+            time.sleep(2)
+            self.option_screen()
         
         if user_input.lower() == 'fight':
             self.fight()                                #COME BACK TO THIS>>>> YOU ARE GETTING A LOT OF ERRORS BUT IT IS CLOSE
