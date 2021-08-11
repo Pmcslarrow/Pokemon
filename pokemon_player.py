@@ -10,13 +10,7 @@ class player:
         self.pokedex = pokedex
         self.pokemon = []
 
-        #charmander = pokemon.Pokemon(None, 'charmander', 15, 'fire', {'ember' : 12, 'scratch' : 12}, 93, 1)
-        #squirtle = pokemon.Pokemon(None, 'squirtle', 15, 'water', {'bubble': 12, 'aqua tail': 32}, 121, 1)
-        #bulbasaur = pokemon.Pokemon(None, 'bulbasaur', 15, 'grass', {'vine whip' : 14, 'power whip' : 41}, 111, 1)
-        #pidgey = pokemon.Pokemon(None, 'pidgey', 15, 'flying', {'quick attack' : 12, 'aerial ace' : 28},  73, 1)
-        #geodude = pokemon.Pokemon(None, 'geodude', 15, 'rock', {'rock throw' : 16, 'rock slide' : 36}, 132, 1)
         self.poke_list = poke_lst
-         #= [charmander, squirtle, bulbasaur, pidgey, geodude]
 
 
     def add_to_pokedex(self, pokemon):
@@ -90,8 +84,8 @@ class player:
             self.option_screen()
         
         if user_input.lower() == 'fight':
-            self.fight()                                #COME BACK TO THIS>>>> YOU ARE GETTING A LOT OF ERRORS BUT IT IS CLOSE
-        
+            self.fight()                                
+            
         if user_input.lower() == 'exit':
             print('Thanks for playing!')
             exit()
